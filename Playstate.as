@@ -9,9 +9,10 @@ package
 	 * ...
 	 * @author Heppell08
 	 * Informations here
-	 * Testing a new function to make button
-	 * for drawing a card appear then make it disappear
-	 * after pulling a "new" card
+	 * Need a few new buttons added with new sprite covers
+	 * then make them only be available to press as certain cards are
+	 * on show. Might need an array but for now i'll hard code
+	 * one function in for now
 	 */
 	public class Playstate extends FlxState
 	{
@@ -21,6 +22,7 @@ package
 		private var button01:FlxButtonPlus;
 		private var button02:FlxButtonPlus; // make a few just for when i add
 		private var button03:FlxButtonPlus; // 3 for now, maybe more later
+		private var button04:FlxButtonPlus;
 			
 		// add cards below
 		public var _card1:Card; // just so i can add to the playstate later
@@ -36,6 +38,9 @@ package
 		private var statstxt:FlxText;
 		private var xptext:FlxText;
 		private var leveltext:FlxText;
+		
+		// testhere
+		private var cardhealth:FlxText;
 		
 		override public function create():void 
 		{
@@ -70,6 +75,10 @@ package
 			button03 = new FlxButtonPlus(100, 100, button03Clicked, null, "Draw Card");
 			add(button03);
 				
+			// battle button tester only
+			button04 = new FlxButtonPlus(0, 80, battleClicked, null, "Battle");
+			add(button04);
+			
 			// cards added below
 			add(_card1 = new Card(150, 150)); // use this method for the X,Y position
 			_fcard1 = new FireCard1(80,80);
@@ -85,6 +94,9 @@ package
 			leveltext = new FlxText(0, 0, FlxG.width);
 			add(leveltext);	
 			
+			// test
+			cardhealth = new FlxText(0, 40, FlxG.width);
+			add(cardhealth);
 			}
 			
 		override public function update():void
@@ -128,6 +140,7 @@ package
 			statstxt.text = 'Stats:' + stat.toString();
 			xptext.text = 'Exp:' + xp.toString();
 			leveltext.text = 'Level:' + level.toString();
+			cardhealth.text = 'CardHP:' +_card1.health.toString(); // NICE!
 		}
 		
 		private function button01Clicked():void
@@ -146,6 +159,17 @@ package
 		private function cardKill():void
 		{
 		   _fcard1.kill();
+		}
+		public function battleClicked():void
+		{
+			if (_card1.health > 0)
+			{
+				_card1.hurt(10);
+			}
+			if (_card1.health < 0)
+			{
+				_card1.kill();
+			}
 		}
 	}
 

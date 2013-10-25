@@ -68,11 +68,11 @@ package
 			
 			// button 3 to earn a card
 			button03 = new FlxButtonPlus(100, 100, button03Clicked, null, "Draw Card");
-		//	add(button03);
+			add(button03);
 				
 			// cards added below
 			add(_card1 = new Card(150, 150)); // use this method for the X,Y position
-			
+			_fcard1 = new FireCard1(80,80);
 			//stats below
 			statstxt = new FlxText(0, 10, FlxG.width);
 			add(statstxt);
@@ -113,14 +113,14 @@ package
 			   xp = 0;
                         }
 			
-			if (level > 3)
+			/*if (level > 3)
 			{
 				add(button03); 
 			}
 			else
 			{
 				button03.kill(); // works but is kind of a cop out
-			}
+			}*/
 		
 			super.update();
 			
@@ -141,7 +141,7 @@ package
 		}
 		private function button03Clicked():void
 		{
-			add(_fcard1 = new FireCard1(80, 80));
+			add(_fcard1);
 		}
 		private function cardKill():void
 		{

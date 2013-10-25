@@ -47,7 +47,7 @@ package
 		
 		override public function create():void 
 		{
-			FlxG.mouse.show(); // will change sprite in parentheses
+			FlxG.mouse.show(Asset.mouse, 3);// will change sprite in parentheses
 			
 			//add backdrop first so its at the back
 			backdrop = new FlxSprite;
@@ -156,9 +156,11 @@ package
 		}
 		private function button03Clicked():void
 		{
+			if (_fcard1.exists = true)
+			{
 			add(_fcard1);
-			
 			add(cardhealth);
+			}
 		}
 		private function cardKill():void
 		{
@@ -166,6 +168,14 @@ package
 		}
 		public function battleClicked():void // basic battle function via buttons
 		{
+			if (_fcard1.exists = true)
+			{
+				_fcard1.hurt(10);
+			}
+			if (_fcard1.health < 0)
+			{
+				_fcard1.destroy();
+			}
 			if (_card1.health > 0) // hurt card if health above 0
 			{
 				_card1.hurt(10);

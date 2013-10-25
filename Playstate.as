@@ -12,7 +12,10 @@ package
 	 * Need a few new buttons added with new sprite covers
 	 * then make them only be available to press as certain cards are
 	 * on show. Might need an array but for now i'll hard code
-	 * one function in for now
+	 * one function in for now.
+	 * Need alot of art and more arrangement os the screen as im slap
+	 * dashing buttons for now. Will tidy them and make
+	 * some new art for them too
 	 */
 	public class Playstate extends FlxState
 	{
@@ -63,20 +66,20 @@ package
 			
 			// Keep buttons on top
 			// first button below
-			button01 = new FlxButtonPlus(50, 50, button01Clicked,null,"Button1");
+			button01 = new FlxButtonPlus(110, 210, button01Clicked, null,"XP Gain");
 			button01.borderColor = 0xEE11DD;
 			add(button01);
 			
 			// button 2 - controls
-			button02 = new FlxButtonPlus(0, 190, button02Clicked, null, "Controls");
+			button02 = new FlxButtonPlus(210, 210, button02Clicked, null, "Controls");
 			add(button02);
 			
 			// button 3 to earn a card
-			button03 = new FlxButtonPlus(100, 100, button03Clicked, null, "Draw Card");
+			button03 = new FlxButtonPlus(210, 10, button03Clicked, null, "Draw Card");
 			add(button03);
 				
 			// battle button tester only
-			button04 = new FlxButtonPlus(0, 80, battleClicked, null, "Battle");
+			button04 = new FlxButtonPlus(10, 210, battleClicked, null, "Battle");
 			add(button04);
 			
 			// cards added below
@@ -96,7 +99,6 @@ package
 			
 			// test
 			cardhealth = new FlxText(0, 40, FlxG.width);
-			add(cardhealth);
 			}
 			
 		override public function update():void
@@ -140,7 +142,7 @@ package
 			statstxt.text = 'Stats:' + stat.toString();
 			xptext.text = 'Exp:' + xp.toString();
 			leveltext.text = 'Level:' + level.toString();
-			cardhealth.text = 'CardHP:' +_card1.health.toString(); // NICE!
+			cardhealth.text = 'CardHP:' +_fcard1.health.toString(); // NICE!
 		}
 		
 		private function button01Clicked():void
@@ -155,18 +157,20 @@ package
 		private function button03Clicked():void
 		{
 			add(_fcard1);
+			
+			add(cardhealth);
 		}
 		private function cardKill():void
 		{
 		   _fcard1.kill();
 		}
-		public function battleClicked():void
+		public function battleClicked():void // basic battle function via buttons
 		{
-			if (_card1.health > 0)
+			if (_card1.health > 0) // hurt card if health above 0
 			{
 				_card1.hurt(10);
 			}
-			if (_card1.health < 0)
+			if (_card1.health < 0) // kill it if below 0
 			{
 				_card1.kill();
 			}

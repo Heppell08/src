@@ -12,13 +12,13 @@ package
 	 * ...
 	 * @author Heppell08
 	 * Informations here
-	 * Need a few new buttons added with new sprite covers
-	 * then make them only be available to press as certain cards are
-	 * on show. Might need an array but for now i'll hard code
-	 * one function in for now.
-	 * Need alot of art and more arrangement os the screen as im slap
-	 * dashing buttons for now. Will tidy them and make
-	 * some new art for them too
+	 * Apparently i cant reset the health interger
+	 * so i might need multiple texts per health card
+	 * I did think using the (_fcard1.health.toString()) || (extra here())
+	 * would have worked but apparently not or im doing it wrong.
+	 * For now ill have different texts per card with names instead.
+	 * Might look better. Also need new font but that will be at
+	 * a later date.
 	 */
 	public class Playstate extends FlxState
 	{
@@ -49,6 +49,7 @@ package
 		
 		// test here
 		private var cardhealth:FlxText;
+		private var water1hlth:FlxText;
 		private var cardgen:int = (FlxMath.rand(1, 20));
 		
 		override public function create():void 
@@ -87,6 +88,7 @@ package
 				
 			// battle button tester only
 			button04 = new FlxButtonPlus(10, 210, battleClicked, null, "Battle");
+			button04.exists = false;
 			add(button04);
 			
 			// declare cards below
@@ -99,7 +101,6 @@ package
 			_wcard1.exists = false;
 			add(_fcard1);
 			_fcard1.exists = false;
-			
 			
 			//stats below
 			statstxt = new FlxText(0, 10, FlxG.width);
@@ -116,10 +117,14 @@ package
 			leveltext.color = 0x000000;
 			add(leveltext);	
 			
-			// card health
+			// card health below
 			cardhealth = new FlxText(0, 30, FlxG.width);
 			cardhealth.color = 0x000000;
-			cardhealth.exists = false;
+		//	cardhealth.exists = false;
+			
+			water1hlth = new FlxText(0, 50, FlxG.width);
+			water1hlth.color = 0x000000;
+		//	water1hlth.exists = false;
 			
 			//tracing cardgen number on press here
 			cardgentxt = new FlxText(0, 40, FlxG.width);
@@ -158,15 +163,18 @@ package
 			statstxt.text = 'Stats:' + stat.toString();
 			xptext.text = 'Exp:' + xp.toString();
 			leveltext.text = 'Level:' + level.toString();
-			cardhealth.text = 'CardHP:' +_fcard1.health.toString() || _wcard1.health.toString(); // NICE!
-			cardgentxt.text = 'CGen:' + cardgen.toString();
+			cardhealth.text = 'Card HP:' + _fcard1.health.toString();  // Fire1 Card
+			water1hlth.text = 'WaterCard:' + _wcard1.health.toString(); // Water 1 Card
+			cardgentxt.text = 'CGen:' + cardgen.toString(); // Random gen card spawn
 		}
 		
 		private function button01Clicked():void
 		{
 			// Re-spawns the same card back in (recycling the good way)
-			if (_fcard1.health < 1)
+			if ((_fcard1.health < 1) || (_wcard1.health<0))
 			{
+				_fcard1.health = FireCard1.HEALTH;
+				_wcard1.health = WaterCard1.HEALTH;
 				button03.exists = true; // reset random card button
 			}
 		}
@@ -178,36 +186,64 @@ package
 		{
 			cardgen = FlxMath.rand(1, 20); // super important
 			
-			if ((cardgen == 12) && (_fcard1.exists = true)) // can be changed to number between 1,20
+			// Make sure only one at a time is onscreen
+			if ((_fcard1.exists = true) && (_wcard1.exists = false))
+			{
+				cardgen = FlxMath.rand(1, 20, [12]);
+			}
+			if ((_fcard1.exists = false) && (_wcard1.exists = true))
+			{
+				cardgen = FlxMath.rand(1, 20, [8]);
+			}
+			if (cardgen == 12) // can be changed to number between 1,20
 			{
 			add(cardhealth); 
-			cardhealth = 50;
 			add(_fcard1);
 			_fcard1.exists = true;
 			cardhealth.exists = true;
 			button03.exists = false;
+			button04.exists = true;
 			}
-			if ((cardgen == 8) && (_wcard1.exists = true)) // new card added
+			if (cardgen == 8) // new card added
 			{
 				add(_wcard1);
-				cardhealth = 90;
-				add(cardhealth);
-				cardhealth.exists = true;
+				add(water1hlth);
+				_wcard1.exists = true;
+				water1hlth.exists = true;
 				button03.exists = false;
+				button04.exists = true;
 			}
 			
 		}
-		public function battleClicked():void // basic battle function via buttons
+		private function battleClicked():void // basic battle function via buttons
 		{
-			if (_fcard1.exists = true) // need to add alot more in here too
+			if (_fcard1.health>0) // need to add alot more in here too
 			{
-				_fcard1.hurt(FlxMath.rand(1,15)); // and more of these functions too...
+				_fcard1.hurt(FlxMath.rand(1, 15)); // and more of these functions too...
 			}
 			if (_fcard1.health < 1)
 			{
 				_fcard1.exists = false;
+				_fcard1.health = FireCard1.HEALTH;
 				cardhealth.exists = false;
+				button04.exists = false;
 			}
+			if (_wcard1.health >0)
+			{
+				_wcard1.hurt(FlxMath.rand(1, 25));
+			}
+			if (_wcard1.health < 1)
+			{
+				_wcard1.exists = false;
+				_wcard1.health = WaterCard1.HEALTH;
+				water1hlth.exists = false;
+				button04.exists = false;
+			}
+			else if ((_wcard1.exists = false) && (_fcard1.exists = false))
+			{
+				return;
+			}
+			return;
 		}
 	}
 

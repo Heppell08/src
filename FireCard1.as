@@ -15,7 +15,7 @@ package
 		protected static const FIRE_ATTACK:int = 10; // 10 attack temp
 		protected static const GREEN_STRONG:int = 5; // strong against
 		protected static const WATER_EFFECT:int = 15; // weakness
-		protected static const HEALTH:int = 50; // health in general
+		public static const HEALTH:int = 50; // health in general
 		
 		
 		public function FireCard1(X:int,Y:int) 

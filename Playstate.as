@@ -6,6 +6,7 @@ package
 	import org.flixel.plugin.photonstorm.FlxExtendedSprite;
 	import org.flixel.plugin.photonstorm.FlxMouseControl;
 	import org.flixel.plugin.photonstorm.FlxMath;
+	import org.flixel.plugin.photonstorm.FlxSpecialFX;
 	import org.flixel.plugin.photonstorm.*;
 	/**
 	 * ...
@@ -32,6 +33,7 @@ package
 		// add cards below
 		public var _card1:Card; // just so i can add to the playstate later
 		public var _fcard1:FireCard1; // might be an easier way to add cards but unsure.
+		public var _wcard1:WaterCard1;
 		
 		// interactive below
 		public var stat:Number = 0;
@@ -43,9 +45,11 @@ package
 		private var statstxt:FlxText;
 		private var xptext:FlxText;
 		private var leveltext:FlxText;
+		private var cardgentxt:FlxText;
 		
-		// testhere
+		// test here
 		private var cardhealth:FlxText;
+		private var cardgen:int = (FlxMath.rand(1, 20));
 		
 		override public function create():void 
 		{
@@ -78,34 +82,49 @@ package
 			
 			// button 3 to earn a card
 			button03 = new FlxButtonPlus(210, 10, button03Clicked, null, "Draw Card");
+			button03.exists = true; // modify below to make nonexistant
 			add(button03);
 				
 			// battle button tester only
 			button04 = new FlxButtonPlus(10, 210, battleClicked, null, "Battle");
 			add(button04);
 			
-			// cards added below
+			// declare cards below
 			add(_card1 = new Card(150, 150)); // use this method for the X,Y position
 			_fcard1 = new FireCard1(80, 80);
+			_wcard1 = new WaterCard1(90, 90);
+			
+			// add cards here
+			add(_wcard1);
+			_wcard1.exists = false;
 			add(_fcard1);
 			_fcard1.exists = false;
 			
+			
 			//stats below
 			statstxt = new FlxText(0, 10, FlxG.width);
+			statstxt.color = 0x000000;
 			add(statstxt);
 			
 			// xp below
 			xptext = new FlxText(0, 20, FlxG.width);
+			xptext.color = 0x000000;
 			add(xptext);
 			
 			//level below
 			leveltext = new FlxText(0, 0, FlxG.width);
+			leveltext.color = 0x000000;
 			add(leveltext);	
 			
-			// test
-			cardhealth = new FlxText(0, 40, FlxG.width);
+			// card health
+			cardhealth = new FlxText(0, 30, FlxG.width);
+			cardhealth.color = 0x000000;
 			cardhealth.exists = false;
-		//	add(cardhealth);
+			
+			//tracing cardgen number on press here
+			cardgentxt = new FlxText(0, 40, FlxG.width);
+			cardgentxt.color = 0x000000;
+			add(cardgentxt);			
 			}
 			
 		override public function update():void
@@ -122,9 +141,8 @@ package
                 {
                     FlxG.addPlugin(new FlxMouseControl);
                 }
-			
-			// the card movement is below in update and the activated plugin code above
-			// * Should only need this 1 card movement hopefully *
+			// activate plugin above the make sprite draggable below the enabled plugin code.
+			// This below allows any extended from Card class to be draggable
 			_card1.enableMouseDrag();
 			
 			// XP and Level up maths here
@@ -134,76 +152,62 @@ package
 			     xp = 0;
             }
 			
-			/*if (level > 3)
-			{
-				add(button03); 
-			}
-			else
-			{
-				button03.kill(); // works but is kind of a cop out
-			}*/
-		
 			super.update();
 			
 			// add the numbers below for real time show
 			statstxt.text = 'Stats:' + stat.toString();
 			xptext.text = 'Exp:' + xp.toString();
 			leveltext.text = 'Level:' + level.toString();
-			cardhealth.text = 'CardHP:' +_fcard1.health.toString(); // NICE!
+			cardhealth.text = 'CardHP:' +_fcard1.health.toString() || _wcard1.health.toString(); // NICE!
+			cardgentxt.text = 'CGen:' + cardgen.toString();
 		}
 		
 		private function button01Clicked():void
 		{
-			// Make this button startgame later on
-		//	xp += 10; // works for testing only
-			if ((_fcard1.health < 1) || (_fcard1.exists = false) && (cardhealth.exists = false))
+			// Re-spawns the same card back in (recycling the good way)
+			if (_fcard1.health < 1)
 			{
-				_fcard1.health = 50;
-				_fcard1.exists = true;
-				cardhealth.exists = true;
+				button03.exists = true; // reset random card button
 			}
 		}
 		private function button02Clicked():void
 		{
 			FlxG.switchState(new Options);
 		}
-		private function button03Clicked():void // needs work here
+		private function button03Clicked():void // Alot to add here... #sadface haha
 		{
-			add(cardhealth); 
-			add(_fcard1);
-			if (_fcard1.health > 0)
+			cardgen = FlxMath.rand(1, 20); // super important
+			
+			if ((cardgen == 12) && (_fcard1.exists = true)) // can be changed to number between 1,20
 			{
+			add(cardhealth); 
+			cardhealth = 50;
+			add(_fcard1);
 			_fcard1.exists = true;
 			cardhealth.exists = true;
+			button03.exists = false;
 			}
-			/*if (_fcard1.exists = false)
+			if ((cardgen == 8) && (_wcard1.exists = true)) // new card added
 			{
-				_fcard1.exists = true;
-			}
-			if (cardhealth.exists = false)
-			{
+				add(_wcard1);
+				cardhealth = 90;
+				add(cardhealth);
 				cardhealth.exists = true;
-			}*/
+				button03.exists = false;
+			}
+			
 		}
 		public function battleClicked():void // basic battle function via buttons
 		{
-			if (_fcard1.exists = true) // need to seperate alot in here
+			if (_fcard1.exists = true) // need to add alot more in here too
 			{
-				_fcard1.hurt(FlxMath.rand(1,15));
+				_fcard1.hurt(FlxMath.rand(1,15)); // and more of these functions too...
 			}
 			if (_fcard1.health < 1)
 			{
 				_fcard1.exists = false;
 				cardhealth.exists = false;
 			}
-		/*	if (_card1.health > 0) // hurt card if health above 0
-			{
-				_card1.hurt(10);
-			}
-			if (_card1.health < 0) // kill it if below 0
-			{
-				_card1.kill();
-			}*/
 		}
 	}
 

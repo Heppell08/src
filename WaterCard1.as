@@ -16,7 +16,6 @@ package
 			super(X, Y);
 			loadGraphic(Asset.wcard1);
 			health = HEALTH;
-			
 		}
 		
 	}

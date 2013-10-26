@@ -157,6 +157,19 @@ package
 			     xp = 0;
             }
 			
+			//works perfectly *DONT DISTURB THIS*
+			if ((_fcard1.health < 0) || (_wcard1.health < 0))
+			{
+				button04.exists = false;
+				button03.exists = true;
+				cardhealth.exists = water1hlth.exists = false;
+				_fcard1.exists = _wcard1.exists = false;
+				_fcard1.health = FireCard1.HEALTH;
+				_wcard1.health = WaterCard1.HEALTH;
+				trace(_wcard1.health);
+				trace(_fcard1.health);
+			}
+			
 			super.update();
 			
 			// add the numbers below for real time show
@@ -168,14 +181,16 @@ package
 			cardgentxt.text = 'CGen:' + cardgen.toString(); // Random gen card spawn
 		}
 		
-		private function button01Clicked():void
+		private function button01Clicked():void // xp gain button
 		{
 			// Re-spawns the same card back in (recycling the good way)
-			if ((_fcard1.health < 1) || (_wcard1.health<0))
+			if ((_fcard1.health < 1) || (_wcard1.health < 1))
 			{
-				_fcard1.health = FireCard1.HEALTH;
-				_wcard1.health = WaterCard1.HEALTH;
 				button03.exists = true; // reset random card button
+			}
+			if ((_fcard1.exists = false) || (_wcard1.exists = false))
+			{
+				button03.exists = true;
 			}
 		}
 		private function button02Clicked():void
@@ -184,12 +199,10 @@ package
 		}
 		private function button03Clicked():void // Alot to add here... #sadface haha
 		{
-			cardgen = FlxMath.rand(1, 20); // super important
-			
 			// Make sure only one at a time is onscreen
 			if ((_fcard1.exists = true) && (_wcard1.exists = false))
 			{
-				cardgen = FlxMath.rand(1, 20, [12]);
+				cardgen = FlxMath.rand(1, 20, [12]); // i suspect this isnt active
 			}
 			if ((_fcard1.exists = false) && (_wcard1.exists = true))
 			{
@@ -197,53 +210,82 @@ package
 			}
 			if (cardgen == 12) // can be changed to number between 1,20
 			{
-			add(cardhealth); 
-			add(_fcard1);
-			_fcard1.exists = true;
-			cardhealth.exists = true;
-			button03.exists = false;
-			button04.exists = true;
+			    add(cardhealth); 
+		    	_fcard1.exists = true;
+		    	cardhealth.exists = true;
+		    	button03.exists = false;
+		    	button04.exists = true;
 			}
 			if (cardgen == 8) // new card added
 			{
-				add(_wcard1);
 				add(water1hlth);
 				_wcard1.exists = true;
 				water1hlth.exists = true;
 				button03.exists = false;
 				button04.exists = true;
 			}
+			else 
+			{
+				cardgen = FlxMath.rand(1, 20); // super important
+			}
 			
 		}
 		private function battleClicked():void // basic battle function via buttons
 		{
-			if (_fcard1.health>0) // need to add alot more in here too
+			//TODO: FIX THIS FUNCTION
+			if (_card1.health > 0)
 			{
-				_fcard1.hurt(FlxMath.rand(1, 15)); // and more of these functions too...
+				_card1.hurt(FlxMath.rand(1, 10));
 			}
-			if (_fcard1.health < 1)
+			if ((_fcard1.health>0) && (_fcard1.exists=true))
+			{
+				_fcard1.hurt(FlxMath.rand(1, 15));
+				trace(_wcard1.health);
+				trace(_fcard1.health);
+			}
+			else if (_fcard1.exists = false)
+			{
+				return;
+			}
+			if ((_wcard1.exists = true) && (_wcard1.health>0))
+			{
+				_wcard1.hurt(FlxMath.rand(1, 25));
+				trace(_wcard1.health);
+				trace(_fcard1.health);
+			}
+			else if (_wcard1.exists = false)
+			{
+				return;
+			}
+			
+			
+			/*if ((_fcard1.health < 1) && (_fcard1.exists = true))
 			{
 				_fcard1.exists = false;
 				_fcard1.health = FireCard1.HEALTH;
 				cardhealth.exists = false;
 				button04.exists = false;
+				button03.exists = true;
 			}
-			if (_wcard1.health >0)
+			else if ((_fcard1.health > 1) && (_fcard1.exists = true)) // need to add alot more in here too
 			{
-				_wcard1.hurt(FlxMath.rand(1, 25));
+				_wcard1.exists = false;
+				_fcard1.hurt(FlxMath.rand(1, 15)); // and more of these functions too...
 			}
-			if (_wcard1.health < 1)
+			
+		    if ((_wcard1.health < 1) && (_wcard1.exists=true))
 			{
 				_wcard1.exists = false;
 				_wcard1.health = WaterCard1.HEALTH;
 				water1hlth.exists = false;
 				button04.exists = false;
+				button03.exists = true;
 			}
-			else if ((_wcard1.exists = false) && (_fcard1.exists = false))
+	        else if ((_wcard1.health > 1) && (_wcard1.exists = true))
 			{
-				return;
-			}
-			return;
+				_fcard1.exists = false;
+				_wcard1.hurt(FlxMath.rand(1, 25));
+			}*/
 		}
 	}
 

@@ -5,6 +5,8 @@ package
 	import org.flixel.plugin.photonstorm.FlxButtonPlus;
 	import org.flixel.plugin.photonstorm.FlxExtendedSprite;
 	import org.flixel.plugin.photonstorm.FlxMouseControl;
+	import org.flixel.plugin.photonstorm.FlxMath;
+	import org.flixel.plugin.photonstorm.*;
 	/**
 	 * ...
 	 * @author Heppell08
@@ -84,7 +86,10 @@ package
 			
 			// cards added below
 			add(_card1 = new Card(150, 150)); // use this method for the X,Y position
-			_fcard1 = new FireCard1(80,80);
+			_fcard1 = new FireCard1(80, 80);
+			add(_fcard1);
+			_fcard1.exists = false;
+			
 			//stats below
 			statstxt = new FlxText(0, 10, FlxG.width);
 			add(statstxt);
@@ -99,6 +104,8 @@ package
 			
 			// test
 			cardhealth = new FlxText(0, 40, FlxG.width);
+			cardhealth.exists = false;
+		//	add(cardhealth);
 			}
 			
 		override public function update():void
@@ -148,7 +155,13 @@ package
 		private function button01Clicked():void
 		{
 			// Make this button startgame later on
-			xp += 10; // works for testing only
+		//	xp += 10; // works for testing only
+			if ((_fcard1.health < 1) || (_fcard1.exists = false) && (cardhealth.exists = false))
+			{
+				_fcard1.health = 50;
+				_fcard1.exists = true;
+				cardhealth.exists = true;
+			}
 		}
 		private function button02Clicked():void
 		{
@@ -156,21 +169,32 @@ package
 		}
 		private function button03Clicked():void // needs work here
 		{
-			
+			add(cardhealth); 
 			add(_fcard1);
-			add(cardhealth);
-			
+			if (_fcard1.health > 0)
+			{
+			_fcard1.exists = true;
+			cardhealth.exists = true;
+			}
+			/*if (_fcard1.exists = false)
+			{
+				_fcard1.exists = true;
+			}
+			if (cardhealth.exists = false)
+			{
+				cardhealth.exists = true;
+			}*/
 		}
 		public function battleClicked():void // basic battle function via buttons
 		{
 			if (_fcard1.exists = true) // need to seperate alot in here
 			{
-				_fcard1.hurt(10);
+				_fcard1.hurt(FlxMath.rand(1,15));
 			}
-			if (_fcard1.health < 0)
+			if (_fcard1.health < 1)
 			{
-				_fcard1.destroy();
-				cardhealth.kill();
+				_fcard1.exists = false;
+				cardhealth.exists = false;
 			}
 		/*	if (_card1.health > 0) // hurt card if health above 0
 			{

@@ -25,7 +25,7 @@ package
 		private var button01:FlxButtonPlus;
 		private var button02:FlxButtonPlus; // make a few just for when i add
 		private var button03:FlxButtonPlus; // 3 for now, maybe more later
-		private var button04:FlxButtonPlus;
+		private var button04:FlxButtonPlus; // battle button
 			
 		// add cards below
 		public var _card1:Card; // just so i can add to the playstate later
@@ -112,9 +112,9 @@ package
 			
 			//activate plugin below for power tools
 			if (FlxG.getPlugin(FlxMouseControl) == null)
-                           {
-                               FlxG.addPlugin(new FlxMouseControl);
-                           }
+                {
+                    FlxG.addPlugin(new FlxMouseControl);
+                }
 			
 			// the card movement is below in update and the activated plugin code above
 			// * Should only need this 1 card movement hopefully *
@@ -123,9 +123,9 @@ package
 			// XP and Level up maths here
 			if (xp > 5 + (level * level))
 			{
-                           level ++;
-			   xp = 0;
-                        }
+                 level ++;
+			     xp = 0;
+            }
 			
 			/*if (level > 3)
 			{
@@ -154,36 +154,32 @@ package
 		{
 			FlxG.switchState(new Options);
 		}
-		private function button03Clicked():void
+		private function button03Clicked():void // needs work here
 		{
-			if (_fcard1.exists = true)
-			{
+			
 			add(_fcard1);
 			add(cardhealth);
-			}
-		}
-		private function cardKill():void
-		{
-		   _fcard1.kill();
+			
 		}
 		public function battleClicked():void // basic battle function via buttons
 		{
-			if (_fcard1.exists = true)
+			if (_fcard1.exists = true) // need to seperate alot in here
 			{
 				_fcard1.hurt(10);
 			}
 			if (_fcard1.health < 0)
 			{
 				_fcard1.destroy();
+				cardhealth.kill();
 			}
-			if (_card1.health > 0) // hurt card if health above 0
+		/*	if (_card1.health > 0) // hurt card if health above 0
 			{
 				_card1.hurt(10);
 			}
 			if (_card1.health < 0) // kill it if below 0
 			{
 				_card1.kill();
-			}
+			}*/
 		}
 	}
 

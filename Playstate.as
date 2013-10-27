@@ -1,5 +1,6 @@
 package  
 {
+	import flash.accessibility.ISimpleTextSelection;
 	import org.flixel.*;
 	import org.flixel.FlxState;
 	import org.flixel.plugin.photonstorm.FlxButtonPlus;
@@ -39,15 +40,19 @@ package
 		private var button05:FlxButtonPlus; // tutorial button
 			
 		// add cards below
-		public var _card1:Card; // just so i can add to the playstate later
-		public var _fcard1:FireCard1; // might be an easier way to add cards but unsure.
-		public var _wcard1:WaterCard1;
+		public static var _card1:Card; // just so i can add to the playstate later
+		public static var _fcard1:FireCard1; // might be an easier way to add cards but unsure.
+		public static var _wcard1:WaterCard1;
 		
 		// interactive below
 		public var stat:Number = 0;
 		public var xp:Number = 0
 		public var level:Number = 1;
 		public var buttonadd:Number = 0;
+		
+		// this is major important number
+		private var cardnumber:Number = 0;
+		private var cnumber:FlxText;
 		
 		// onscreen texts below
 		private var statstxt:FlxText;
@@ -142,6 +147,10 @@ package
 			battlegentext.color = 0x000000;
 			add(battlegentext);
 			
+			cnumber = new FlxText(0, 60, FlxG.width);
+			cnumber.color = 0x000000;
+			add(cnumber);
+			
 			//keep text below above the black box
 			blackopts = new FlxSprite;
 			blackopts.loadGraphic(Asset.blackoptions, false, false, 320, 240);
@@ -212,7 +221,9 @@ package
             }
 			
 			//works perfectly *DONT DISTURB THIS*
-			if (_fcard1.health < 1 || _wcard1.health < 1 || _card1.health < 1)
+			if (_fcard1.health < 1 ||
+			    _wcard1.health < 1 ||
+			    _card1.health < 1)
 			{
 				button04.visible = false;
 				button03.exists = true;
@@ -222,9 +233,11 @@ package
 				_fcard1.health = FireCard1.HEALTH;
 				_wcard1.health = WaterCard1.HEALTH;
 				_card1.health = Card.HEALTH;
-				battlegen = FlxMath.rand(1,5); // keep it safe and fair
-				trace(_wcard1.health);
-				trace(_fcard1.health);
+				battlegen = FlxMath.rand(1, 5); // keep it safe and fair
+				
+			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+				cardnumber = 0; //*VERY IMPORTANT* DONT TOUCH THIS AT ALL!!!!!!!!
+			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 			}
 			
 			// update 
@@ -236,14 +249,15 @@ package
 			xptext.text = 'Exp:' + xp.toString();
 			leveltext.text = 'Level:' + level.toString();
 			cardgentxt.text = 'CGen:' + cardgen.toString(); // Random gen card spawn
+			cnumber.text = 'Card No:' +cardnumber.toString(); // test for card numbers
 			
 			//fuck yeah, Below code is awesome
 			// need to add as i go into this code
-			if (_wcard1.exists == true)
+			if (cardnumber == 2) 
 			{
 				cardhealth.text = 'Card HP:' + _wcard1.health.toString();
 			}
-			if (_fcard1.exists == true)
+			if (cardnumber == 1)
 			{
 				cardhealth.text = 'Card HP:' +_fcard1.health.toString();
 			}
@@ -277,12 +291,23 @@ package
 				button03.visible =
 				button04.visible = false;
 			}
+			// below is all the cards in update given numbers 
+			if (_fcard1.exists == true)
+			{
+				cardnumber = 1;
+			}
+			if (_wcard1.exists == true)
+			{
+				cardnumber = 2;
+			}
 		}
 		
 		private function button01Clicked():void // xp gain button
 		{
 			// Re-spawns the same card back in (recycling the good way)
-			if (_fcard1.health < 1 || _wcard1.health < 1 || _card1.health <1)
+			if (_fcard1.health < 1 || 
+			    _wcard1.health < 1 || 
+				_card1.health <1)
 			{
 				button03.exists = true; // reset random card button
 			}
@@ -300,24 +325,24 @@ package
 		private function button03Clicked():void // Alot to add here... #sadface haha
 		{
 			// Make sure only one at a time is onscreen
-			if (_fcard1.exists == true && _wcard1.exists == false && _card1.exists == false)
+			if(cardnumber==1) /*(_fcard1.exists == true && _wcard1.exists == false && _card1.exists == false)*/
 			{
 				cardgen = FlxMath.rand(1, 20, [12]); // safety but ive coded around this issue
 			}
-			if (_fcard1.exists == false && _wcard1.exists == true && _card1.exists == false)
+			if(cardnumber==2) /*(_fcard1.exists == false && _wcard1.exists == true && _card1.exists == false)*/
 			{
 				cardgen = FlxMath.rand(1, 20, [8]);
 			}
-			if (_card1.exists == true && _wcard1.exists == false && _fcard1.exists == false)
+			/*if (_card1.exists == true && _wcard1.exists == false && _fcard1.exists == false)
 			{
 				cardgen = FlxMath.rand(1, 20, [10]);
-			}
+			}*/
 			if (cardgen == 12) // can be changed to number between 1,20
 			{
 			    add(cardhealth); 
 		    	_fcard1.exists = true;
 		    	cardhealth.exists = true;
-				button03.exists = false;
+			//	button03.exists = false;
 		    	button04.visible = true;
 				cardgen = 1; // necessary for debug of math
 			}
@@ -330,7 +355,7 @@ package
 				button04.visible = true;
 				cardgen = 1; // for fairness same in here
 			}
-			if (cardgen == 10)
+		/*	if (cardgen == 10)
 			{
 				add(cardhealth);
 				_card1.exists = true;
@@ -338,7 +363,7 @@ package
 				button03.exists = false;
 				button04.visible = true;
 				cardgen = 1;
-			}
+			}*/
 			else 
 			{
 				cardgen = FlxMath.rand(1, 20); // super important

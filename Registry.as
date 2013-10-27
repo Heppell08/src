@@ -6,7 +6,7 @@ package
 	 */
 	public class Registry 
 	{
-		// will implement later
+		// Use this fo
 		
 		
 		public function Registry() 

@@ -158,12 +158,14 @@ package
             }
 			
 			//works perfectly *DONT DISTURB THIS*
-			if ((_fcard1.health < 0) || (_wcard1.health < 0))
+			if (_fcard1.health < 1 || _wcard1.health < 1)
 			{
 				button04.exists = false;
 				button03.exists = true;
-				cardhealth.exists = water1hlth.exists = false;
-				_fcard1.exists = _wcard1.exists = false;
+				cardhealth.exists = false;
+				water1hlth.exists = false;
+				_fcard1.exists = false;
+				_wcard1.exists = false;
 				_fcard1.health = FireCard1.HEALTH;
 				_wcard1.health = WaterCard1.HEALTH;
 				trace(_wcard1.health);
@@ -184,11 +186,11 @@ package
 		private function button01Clicked():void // xp gain button
 		{
 			// Re-spawns the same card back in (recycling the good way)
-			if ((_fcard1.health < 1) || (_wcard1.health < 1))
+			if (_fcard1.health < 1 || _wcard1.health < 1)
 			{
 				button03.exists = true; // reset random card button
 			}
-			if ((_fcard1.exists = false) || (_wcard1.exists = false))
+			if (_fcard1.exists == false || _wcard1.exists == false)
 			{
 				button03.exists = true;
 			}
@@ -200,11 +202,11 @@ package
 		private function button03Clicked():void // Alot to add here... #sadface haha
 		{
 			// Make sure only one at a time is onscreen
-			if ((_fcard1.exists = true) && (_wcard1.exists = false))
+			if (_fcard1.exists == true && _wcard1.exists == false)
 			{
 				cardgen = FlxMath.rand(1, 20, [12]); // i suspect this isnt active
 			}
-			if ((_fcard1.exists = false) && (_wcard1.exists = true))
+			if (_fcard1.exists == false && _wcard1.exists == true)
 			{
 				cardgen = FlxMath.rand(1, 20, [8]);
 			}
@@ -215,6 +217,7 @@ package
 		    	cardhealth.exists = true;
 		    	button03.exists = false;
 		    	button04.exists = true;
+				cardgen = 1;
 			}
 			if (cardgen == 8) // new card added
 			{
@@ -223,6 +226,7 @@ package
 				water1hlth.exists = true;
 				button03.exists = false;
 				button04.exists = true;
+				cardgen = 1;
 			}
 			else 
 			{
@@ -232,60 +236,20 @@ package
 		}
 		private function battleClicked():void // basic battle function via buttons
 		{
-			//TODO: FIX THIS FUNCTION
-			if (_card1.health > 0)
+			//TODO: Make damage not hurt card on spawning in new card.
+			
+			if (_fcard1.health > 0 && _fcard1.exists == true)
 			{
-				_card1.hurt(FlxMath.rand(1, 10));
+			     _fcard1.hurt(FlxMath.rand(1, 15));
+		         trace(_wcard1.health);
+		         trace(_fcard1.health);
 			}
-			if ((_fcard1.health>0) && (_fcard1.exists=true))
-			{
-				_fcard1.hurt(FlxMath.rand(1, 15));
-				trace(_wcard1.health);
-				trace(_fcard1.health);
-			}
-			else if (_fcard1.exists = false)
-			{
-				return;
-			}
-			if ((_wcard1.exists = true) && (_wcard1.health>0))
+			if (_wcard1.health > 0 && _wcard1.exists == true)
 			{
 				_wcard1.hurt(FlxMath.rand(1, 25));
 				trace(_wcard1.health);
 				trace(_fcard1.health);
 			}
-			else if (_wcard1.exists = false)
-			{
-				return;
-			}
-			
-			
-			/*if ((_fcard1.health < 1) && (_fcard1.exists = true))
-			{
-				_fcard1.exists = false;
-				_fcard1.health = FireCard1.HEALTH;
-				cardhealth.exists = false;
-				button04.exists = false;
-				button03.exists = true;
-			}
-			else if ((_fcard1.health > 1) && (_fcard1.exists = true)) // need to add alot more in here too
-			{
-				_wcard1.exists = false;
-				_fcard1.hurt(FlxMath.rand(1, 15)); // and more of these functions too...
-			}
-			
-		    if ((_wcard1.health < 1) && (_wcard1.exists=true))
-			{
-				_wcard1.exists = false;
-				_wcard1.health = WaterCard1.HEALTH;
-				water1hlth.exists = false;
-				button04.exists = false;
-				button03.exists = true;
-			}
-	        else if ((_wcard1.health > 1) && (_wcard1.exists = true))
-			{
-				_fcard1.exists = false;
-				_wcard1.hurt(FlxMath.rand(1, 25));
-			}*/
 		}
 	}
 

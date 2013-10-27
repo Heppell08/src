@@ -46,11 +46,13 @@ package
 		private var xptext:FlxText;
 		private var leveltext:FlxText;
 		private var cardgentxt:FlxText;
+		private var battlegentext:FlxText;
 		
 		// test here
 		private var cardhealth:FlxText;
 		private var water1hlth:FlxText;
 		private var cardgen:int = (FlxMath.rand(1, 20));
+		private var battlegen:int = (FlxMath.rand(1, 50));
 		
 		override public function create():void 
 		{
@@ -129,7 +131,11 @@ package
 			//tracing cardgen number on press here
 			cardgentxt = new FlxText(0, 40, FlxG.width);
 			cardgentxt.color = 0x000000;
-			add(cardgentxt);			
+			add(cardgentxt);
+			
+			battlegentext = new FlxText(40, 0, FlxG.width);
+			battlegentext.color = 0x000000;
+			add(battlegentext);
 			}
 			
 		override public function update():void
@@ -168,6 +174,7 @@ package
 				_wcard1.exists = false;
 				_fcard1.health = FireCard1.HEALTH;
 				_wcard1.health = WaterCard1.HEALTH;
+				battlegen = 1;
 				trace(_wcard1.health);
 				trace(_fcard1.health);
 			}
@@ -175,6 +182,7 @@ package
 			super.update();
 			
 			// add the numbers below for real time show
+			battlegentext.text = 'BGen:' + battlegen.toString();
 			statstxt.text = 'Stats:' + stat.toString();
 			xptext.text = 'Exp:' + xp.toString();
 			leveltext.text = 'Level:' + level.toString();
@@ -217,7 +225,7 @@ package
 		    	cardhealth.exists = true;
 		    	button03.exists = false;
 		    	button04.exists = true;
-				cardgen = 1;
+				cardgen = 1; // necessary for debug of math
 			}
 			if (cardgen == 8) // new card added
 			{
@@ -226,7 +234,7 @@ package
 				water1hlth.exists = true;
 				button03.exists = false;
 				button04.exists = true;
-				cardgen = 1;
+				cardgen = 1; // for fairness same in here
 			}
 			else 
 			{
@@ -237,14 +245,15 @@ package
 		private function battleClicked():void // basic battle function via buttons
 		{
 			//TODO: Make damage not hurt card on spawning in new card.
-			
-			if (_fcard1.health > 0 && _fcard1.exists == true)
+			// Maybe something simple can fit in somewhere
+			battlegen = FlxMath.rand(1, 50);
+			if (battlegen == 5,10,15,20,25,30,35,40,45,50 && _fcard1.exists == true)
 			{
 			     _fcard1.hurt(FlxMath.rand(1, 15));
 		         trace(_wcard1.health);
 		         trace(_fcard1.health);
 			}
-			if (_wcard1.health > 0 && _wcard1.exists == true)
+			if (battlegen == 6,12,18,21,27,31,37,41,47,49 && _wcard1.exists == true)
 			{
 				_wcard1.hurt(FlxMath.rand(1, 25));
 				trace(_wcard1.health);

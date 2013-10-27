@@ -12,13 +12,10 @@ package
 	 * ...
 	 * @author Heppell08
 	 * Informations here
-	 * Apparently i cant reset the health interger
-	 * so i might need multiple texts per health card
-	 * I did think using the (_fcard1.health.toString()) || (extra here())
-	 * would have worked but apparently not or im doing it wrong.
-	 * For now ill have different texts per card with names instead.
-	 * Might look better. Also need new font but that will be at
-	 * a later date.
+	 * All code is working perfectly now
+	 * and the next update to this class is
+	 * going to be huge. More cards, and options menu,
+	 * rare card spawner, currency and more!!!
 	 */
 	public class Playstate extends FlxState
 	{
@@ -50,7 +47,6 @@ package
 		
 		// test here
 		private var cardhealth:FlxText;
-		private var water1hlth:FlxText;
 		private var cardgen:int = (FlxMath.rand(1, 20));
 		private var battlegen:int = (FlxMath.rand(1, 50));
 		
@@ -75,7 +71,7 @@ package
 			
 			// Keep buttons on top
 			// first button below
-			button01 = new FlxButtonPlus(110, 210, button01Clicked, null,"XP Gain");
+			button01 = new FlxButtonPlus(110, 210, button01Clicked, null,"XP Gain"); // unused ATM
 			button01.borderColor = 0xEE11DD;
 			add(button01);
 			
@@ -90,7 +86,7 @@ package
 				
 			// battle button tester only
 			button04 = new FlxButtonPlus(10, 210, battleClicked, null, "Battle");
-			button04.exists = false;
+			button04.visible = false;
 			add(button04);
 			
 			// declare cards below
@@ -122,20 +118,17 @@ package
 			// card health below
 			cardhealth = new FlxText(0, 30, FlxG.width);
 			cardhealth.color = 0x000000;
-		//	cardhealth.exists = false;
-			
-			water1hlth = new FlxText(0, 50, FlxG.width);
-			water1hlth.color = 0x000000;
-		//	water1hlth.exists = false;
-			
-			//tracing cardgen number on press here
+						
+			//tracing card generator number on press here
 			cardgentxt = new FlxText(0, 40, FlxG.width);
 			cardgentxt.color = 0x000000;
 			add(cardgentxt);
 			
+			// random battle generator damage number
 			battlegentext = new FlxText(40, 0, FlxG.width);
 			battlegentext.color = 0x000000;
 			add(battlegentext);
+			
 			}
 			
 		override public function update():void
@@ -149,9 +142,10 @@ package
 			
 			//activate plugin below for power tools
 			if (FlxG.getPlugin(FlxMouseControl) == null)
-                {
-                    FlxG.addPlugin(new FlxMouseControl);
-                }
+            {
+                 FlxG.addPlugin(new FlxMouseControl);
+            }
+				
 			// activate plugin above the make sprite draggable below the enabled plugin code.
 			// This below allows any extended from Card class to be draggable
 			_card1.enableMouseDrag();
@@ -166,19 +160,19 @@ package
 			//works perfectly *DONT DISTURB THIS*
 			if (_fcard1.health < 1 || _wcard1.health < 1)
 			{
-				button04.exists = false;
+				button04.visible = false;
 				button03.exists = true;
 				cardhealth.exists = false;
-				water1hlth.exists = false;
 				_fcard1.exists = false;
 				_wcard1.exists = false;
 				_fcard1.health = FireCard1.HEALTH;
 				_wcard1.health = WaterCard1.HEALTH;
-				battlegen = 1;
+				battlegen = FlxMath.rand(1,5); // keep it safe and fair
 				trace(_wcard1.health);
 				trace(_fcard1.health);
 			}
 			
+			// update 
 			super.update();
 			
 			// add the numbers below for real time show
@@ -186,9 +180,18 @@ package
 			statstxt.text = 'Stats:' + stat.toString();
 			xptext.text = 'Exp:' + xp.toString();
 			leveltext.text = 'Level:' + level.toString();
-			cardhealth.text = 'Card HP:' + _fcard1.health.toString();  // Fire1 Card
-			water1hlth.text = 'WaterCard:' + _wcard1.health.toString(); // Water 1 Card
 			cardgentxt.text = 'CGen:' + cardgen.toString(); // Random gen card spawn
+			
+			//fuck yeah, Below code is awesome
+			// need to add as i go into this code
+			if (_wcard1.exists == true)
+			{
+				cardhealth.text = 'Card HP:' + _wcard1.health.toString();
+			}
+			if (_fcard1.exists == true)
+			{
+				cardhealth.text = 'Card HP:' +_fcard1.health.toString();
+			}
 		}
 		
 		private function button01Clicked():void // xp gain button
@@ -203,17 +206,19 @@ package
 				button03.exists = true;
 			}
 		}
+		
 		private function button02Clicked():void
 		{
 			FlxG.switchState(new Options);
 		}
+		
 		private function button03Clicked():void // Alot to add here... #sadface haha
 		{
 			// Make sure only one at a time is onscreen
 			if (_fcard1.exists == true && _wcard1.exists == false)
 			{
-				cardgen = FlxMath.rand(1, 20, [12]); // i suspect this isnt active
-			}
+				cardgen = FlxMath.rand(1, 20, [12]); // safety but ive coded around this issue
+			}                                        // left in just incase something bugs out
 			if (_fcard1.exists == false && _wcard1.exists == true)
 			{
 				cardgen = FlxMath.rand(1, 20, [8]);
@@ -223,17 +228,15 @@ package
 			    add(cardhealth); 
 		    	_fcard1.exists = true;
 		    	cardhealth.exists = true;
-		    	button03.exists = false;
-		    	button04.exists = true;
+		    	button04.visible = true;
 				cardgen = 1; // necessary for debug of math
 			}
 			if (cardgen == 8) // new card added
 			{
-				add(water1hlth);
+				add(cardhealth);
 				_wcard1.exists = true;
-				water1hlth.exists = true;
-				button03.exists = false;
-				button04.exists = true;
+				cardhealth.exists = true;
+				button04.visible = true;
 				cardgen = 1; // for fairness same in here
 			}
 			else 
@@ -242,22 +245,30 @@ package
 			}
 			
 		}
+		
 		private function battleClicked():void // basic battle function via buttons
 		{
-			//TODO: Make damage not hurt card on spawning in new card.
-			// Maybe something simple can fit in somewhere
-			battlegen = FlxMath.rand(1, 50);
-			if (battlegen == 5,10,15,20,25,30,35,40,45,50 && _fcard1.exists == true)
+			//So button vidible is best approach and not glitching or
+			// firing the function when it becomes an existance ingame.
+			// winning and more code to come :D
+			
+			battlegen = FlxMath.rand(1, 50); // random battle number generator
+			
+			if (battlegen == 5,10,15,20,25,30,35,40,45,50 && _fcard1.exists == true) // numbers and card existance
 			{
 			     _fcard1.hurt(FlxMath.rand(1, 15));
 		         trace(_wcard1.health);
 		         trace(_fcard1.health);
+				 trace(_wcard1.hurt);
+				 trace(_fcard1.hurt);
 			}
 			if (battlegen == 6,12,18,21,27,31,37,41,47,49 && _wcard1.exists == true)
 			{
 				_wcard1.hurt(FlxMath.rand(1, 25));
 				trace(_wcard1.health);
 				trace(_fcard1.health);
+				trace(_wcard1.hurt);
+			    trace(_fcard1.hurt);
 			}
 		}
 	}

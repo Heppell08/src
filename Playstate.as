@@ -12,20 +12,31 @@ package
 	 * ...
 	 * @author Heppell08
 	 * Informations here
-	 * All code is working perfectly now
-	 * and the next update to this class is
-	 * going to be huge. More cards, and options menu,
-	 * rare card spawner, currency and more!!!
+	 * This is going to take a 
+	 * long time to code. I got a small
+	 * mini tut screen added for now and i'm
+	 * going to look up some code ideas for a
+	 * class that holds the info of cards existing
+	 * so it doesnt mess up my playstate.
+	 * Maybe make a class to extend playstate
+	 * and use that as the final version for the main
+	 * gameplay. just an idea ATM!
 	 */
 	public class Playstate extends FlxState
 	{
-		// main here
+		// main game important ones here
 		private var backdrop:FlxSprite;
 		private var displayhud:FlxSprite;
+		private var optionstxt:FlxText;
+		private var blackopts:FlxSprite;
+		private var tutotext:FlxText;
+		
+		// buttons added below only
 		private var button01:FlxButtonPlus;
 		private var button02:FlxButtonPlus; // make a few just for when i add
 		private var button03:FlxButtonPlus; // 3 for now, maybe more later
 		private var button04:FlxButtonPlus; // battle button
+		private var button05:FlxButtonPlus; // tutorial button
 			
 		// add cards below
 		public var _card1:Card; // just so i can add to the playstate later
@@ -90,11 +101,13 @@ package
 			add(button04);
 			
 			// declare cards below
-			add(_card1 = new Card(150, 150)); // use this method for the X,Y position
+			_card1 = new Card(150, 150); // use this method for the X,Y position
 			_fcard1 = new FireCard1(80, 80);
 			_wcard1 = new WaterCard1(90, 90);
 			
 			// add cards here
+			add(_card1);
+			_card1.exists = false;
 			add(_wcard1);
 			_wcard1.exists = false;
 			add(_fcard1);
@@ -129,6 +142,47 @@ package
 			battlegentext.color = 0x000000;
 			add(battlegentext);
 			
+			//keep text below above the black box
+			blackopts = new FlxSprite;
+			blackopts.loadGraphic(Asset.blackoptions, false, false, 320, 240);
+			blackopts.visible = true;
+			add(blackopts);
+			
+			// only this button here so its ontop of blackbox
+			// tutorial button to start game
+			button05 = new FlxButtonPlus(110, 165, tutorialClicked, null, "Tutorial");
+			button05.exists = true;
+			add(button05);
+			
+			//keep options at bottom so ontop
+			optionstxt = new FlxText(0, 0, 320, 
+			"Collect cards and battle! \n" +
+			"Press Q to close this menu \n" + 
+			"Controls: \n " +
+		    "Mouse controlled mainly \n" +
+		    "Green card - Common \n" +
+		    "Yellow card - Good \n" +
+		    "Orange Card - Rare \n" +
+		    "Purple card - Legendary \n" +
+		    "Yellow Card - Unique \n" +
+		    "Black Card - ???? \n" +
+		    "Made by Heppell08");
+		 	optionstxt.alignment = "center";
+			optionstxt.size = 16;
+			optionstxt.color = 0x0000FF;
+			optionstxt.visible = false;
+			add(optionstxt);
+			
+			// tutorial text here
+			tutotext = new FlxText(10, 0, 300,
+			"Press O for options \n" +
+			"Cards are randomly generated to spawn \n" +
+			"The rarity of cards can be seen on card page \n" +
+			"Battle, earn XP and collect all the cards!");
+			tutotext.alignment = "center";
+			tutotext.color = 0x0000A0;
+			tutotext.size = 16;
+			add(tutotext);
 			}
 			
 		override public function update():void
@@ -158,7 +212,7 @@ package
             }
 			
 			//works perfectly *DONT DISTURB THIS*
-			if (_fcard1.health < 1 || _wcard1.health < 1)
+			if (_fcard1.health < 1 || _wcard1.health < 1 || _card1.health < 1)
 			{
 				button04.visible = false;
 				button03.exists = true;
@@ -167,6 +221,7 @@ package
 				_wcard1.exists = false;
 				_fcard1.health = FireCard1.HEALTH;
 				_wcard1.health = WaterCard1.HEALTH;
+				_card1.health = Card.HEALTH;
 				battlegen = FlxMath.rand(1,5); // keep it safe and fair
 				trace(_wcard1.health);
 				trace(_fcard1.health);
@@ -192,16 +247,46 @@ package
 			{
 				cardhealth.text = 'Card HP:' +_fcard1.health.toString();
 			}
+			if (_card1.exists == true)
+			{
+				cardhealth.text = 'Card HP:' +_card1.health.toString();
+			}
+			
+			// options hide/show below
+			if (tutotext.exists == true && FlxG.keys.justPressed("O"))
+			{
+				return;
+			}
+			if (FlxG.keys.justPressed("O"))
+			{
+				FlxG.mouse.hide();
+				blackopts.visible = true;
+				optionstxt.visible = true;
+			}
+			if (FlxG.keys.justPressed("Q"))
+			{
+				FlxG.mouse.show();
+				blackopts.visible = false;
+				optionstxt.visible = false;
+			}
+			if(button05.exists == true)
+			{
+				// these all need hidden
+				button01.visible = 
+				button02.visible = 
+				button03.visible =
+				button04.visible = false;
+			}
 		}
 		
 		private function button01Clicked():void // xp gain button
 		{
 			// Re-spawns the same card back in (recycling the good way)
-			if (_fcard1.health < 1 || _wcard1.health < 1)
+			if (_fcard1.health < 1 || _wcard1.health < 1 || _card1.health <1)
 			{
 				button03.exists = true; // reset random card button
 			}
-			if (_fcard1.exists == false || _wcard1.exists == false)
+			if (_fcard1.exists == false || _wcard1.exists == false || _wcard1.exists == false)
 			{
 				button03.exists = true;
 			}
@@ -215,19 +300,24 @@ package
 		private function button03Clicked():void // Alot to add here... #sadface haha
 		{
 			// Make sure only one at a time is onscreen
-			if (_fcard1.exists == true && _wcard1.exists == false)
+			if (_fcard1.exists == true && _wcard1.exists == false && _card1.exists == false)
 			{
 				cardgen = FlxMath.rand(1, 20, [12]); // safety but ive coded around this issue
-			}                                        // left in just incase something bugs out
-			if (_fcard1.exists == false && _wcard1.exists == true)
+			}
+			if (_fcard1.exists == false && _wcard1.exists == true && _card1.exists == false)
 			{
 				cardgen = FlxMath.rand(1, 20, [8]);
+			}
+			if (_card1.exists == true && _wcard1.exists == false && _fcard1.exists == false)
+			{
+				cardgen = FlxMath.rand(1, 20, [10]);
 			}
 			if (cardgen == 12) // can be changed to number between 1,20
 			{
 			    add(cardhealth); 
 		    	_fcard1.exists = true;
 		    	cardhealth.exists = true;
+				button03.exists = false;
 		    	button04.visible = true;
 				cardgen = 1; // necessary for debug of math
 			}
@@ -236,8 +326,18 @@ package
 				add(cardhealth);
 				_wcard1.exists = true;
 				cardhealth.exists = true;
+				button03.exists = false;
 				button04.visible = true;
 				cardgen = 1; // for fairness same in here
+			}
+			if (cardgen == 10)
+			{
+				add(cardhealth);
+				_card1.exists = true;
+				cardhealth.exists = true;
+				button03.exists = false;
+				button04.visible = true;
+				cardgen = 1;
 			}
 			else 
 			{
@@ -248,7 +348,7 @@ package
 		
 		private function battleClicked():void // basic battle function via buttons
 		{
-			//So button vidible is best approach and not glitching or
+			// So button vidible is best approach and not glitching or
 			// firing the function when it becomes an existance ingame.
 			// winning and more code to come :D
 			
@@ -257,19 +357,32 @@ package
 			if (battlegen == 5,10,15,20,25,30,35,40,45,50 && _fcard1.exists == true) // numbers and card existance
 			{
 			     _fcard1.hurt(FlxMath.rand(1, 15));
-		         trace(_wcard1.health);
-		         trace(_fcard1.health);
-				 trace(_wcard1.hurt);
-				 trace(_fcard1.hurt);
 			}
 			if (battlegen == 6,12,18,21,27,31,37,41,47,49 && _wcard1.exists == true)
 			{
 				_wcard1.hurt(FlxMath.rand(1, 25));
-				trace(_wcard1.health);
-				trace(_fcard1.health);
-				trace(_wcard1.hurt);
-			    trace(_fcard1.hurt);
 			}
+			if (battlegen == 2, 6, 11, 17, 29, 37 && _card1.exists == true)
+			{
+				_card1.hurt(FlxMath.rand(1, 10));
+			}
+		}
+		private function tutorialClicked():void
+		{
+			FlxG.flash(0x000000, 1, tutorialOver);
+			FlxG.shake(.005, 2);
+		}
+		private function tutorialOver():void
+		{
+			FlxG.flash(0x000000, 1);
+			blackopts.visible = false;
+			tutotext.visible = false;
+			button05.exists = false;
+			
+		    button01.visible = 
+	        button02.visible = 
+			button03.visible =
+			button04.visible = true;
 		}
 	}
 

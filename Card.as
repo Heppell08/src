@@ -14,7 +14,7 @@ package
 	 */
 	public class Card extends FlxExtendedSprite
 	{
-		protected static const HEALTH:int = 150;
+		public static const HEALTH:int = 150;
 				
 		public function Card(X:int,Y:int):void 
 		{

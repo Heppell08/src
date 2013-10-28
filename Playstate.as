@@ -54,6 +54,16 @@ package
 		private var cardnumber:Number = 0;
 		private var cnumber:FlxText;
 		
+		// seperate card numbers per stat of card below
+		private var firenumber:Number = 0; // firecards assigned in here
+		private var waternumber:Number = 0; // watercards assigned in here
+		private var earthnumber:Number = 0; // earth cards assigned in here
+		private var windnumber:Number = 0; // wind cards assigned in here
+		private var powerupnumber:Number = 0; // power ups assigned in here
+		
+		// special legend number below
+		private var legendsnumber:Number = 0; //LEGENDARY CARDS HERE
+		
 		// onscreen texts below
 		private var statstxt:FlxText;
 		private var xptext:FlxText;
@@ -236,7 +246,13 @@ package
 				battlegen = FlxMath.rand(1, 5); // keep it safe and fair
 				
 			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
-				cardnumber = 0; //*VERY IMPORTANT* DONT TOUCH THIS AT ALL!!!!!!!!
+				cardnumber =  //*VERY IMPORTANT* DONT TOUCH THIS AT ALL!!!!!!!!
+				firenumber = 
+				waternumber =
+				windnumber =       // Dont modify it in anyway
+				powerupnumber =
+				earthnumber = 
+				legendsnumber = 0; // everything is reset in here
 			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 			}
 			
@@ -253,15 +269,15 @@ package
 			
 			//fuck yeah, Below code is awesome
 			// need to add as i go into this code
-			if (cardnumber == 2) 
+			if (waternumber == 1) 
 			{
 				cardhealth.text = 'Card HP:' + _wcard1.health.toString();
 			}
-			if (cardnumber == 1)
+			if (firenumber == 1)
 			{
 				cardhealth.text = 'Card HP:' +_fcard1.health.toString();
 			}
-			if (_card1.exists == true)
+			if (_card1.exists == true) // havent set a number for this yet
 			{
 				cardhealth.text = 'Card HP:' +_card1.health.toString();
 			}
@@ -294,11 +310,11 @@ package
 			// below is all the cards in update given numbers 
 			if (_fcard1.exists == true)
 			{
-				cardnumber = 1;
+				firenumber = 1; // made 1 for first card in fire deck
 			}
 			if (_wcard1.exists == true)
 			{
-				cardnumber = 2;
+				waternumber = 1; // same applied to water as fire for card numbers
 			}
 		}
 		
@@ -324,36 +340,73 @@ package
 		
 		private function button03Clicked():void // Alot to add here... #sadface haha
 		{
-			// Make sure only one at a time is onscreen
-			if(cardnumber==1) /*(_fcard1.exists == true && _wcard1.exists == false && _card1.exists == false)*/
-			{
-				cardgen = FlxMath.rand(1, 20, [12]); // safety but ive coded around this issue
-			}
-			if(cardnumber==2) /*(_fcard1.exists == false && _wcard1.exists == true && _card1.exists == false)*/
-			{
-				cardgen = FlxMath.rand(1, 20, [8]);
-			}
+			
 			/*if (_card1.exists == true && _wcard1.exists == false && _fcard1.exists == false)
 			{
 				cardgen = FlxMath.rand(1, 20, [10]);
 			}*/
-			if (cardgen == 12) // can be changed to number between 1,20
+			if (cardgen == 1) // can be changed to number between 1,20
 			{
+				firenumber = FlxMath.rand(1, 10)
+				
+				if (firenumber == 1)
+				{
 			    add(cardhealth); 
 		    	_fcard1.exists = true;
 		    	cardhealth.exists = true;
-			//	button03.exists = false;
+				button03.exists = false;
 		    	button04.visible = true;
 				cardgen = 1; // necessary for debug of math
+				}
+			/*	if (firenumber == 2)
+				{
+					//these all need coded in
+				}
+				if (firenumber == 3)
+				{
+					
+				}
+				if (firenumber == 4)
+				{
+					
+				}
+				if (firenumber == 5)
+				{
+					
+				}
+				if (firenumber == 6)
+				{
+					
+				}
+				if (firenumber == 7)
+				{
+					
+				}
+				if (firenumber == 8)
+				{
+					
+				}
+				if (firenumber == 9)
+				{
+					
+				}
+				if (firenumber == 10)
+				{
+					//rarest card is in here
+				} */
 			}
 			if (cardgen == 8) // new card added
 			{
+				waternumber = FlxMath.rand(1, 10)
+				if (waternumber == 1)
+				{
 				add(cardhealth);
 				_wcard1.exists = true;
 				cardhealth.exists = true;
 				button03.exists = false;
 				button04.visible = true;
 				cardgen = 1; // for fairness same in here
+				}
 			}
 		/*	if (cardgen == 10)
 			{

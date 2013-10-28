@@ -220,15 +220,19 @@ package
 			tutotext.size = 16;
 			add(tutotext);
 			
+			// inv group added here
+			// add to this group BELOW this add();
 			add(Inv);
 			
+			// changing to a full screen HUD look..
 			invBG = new FlxSprite(0, 0);
-			invBG.makeGraphic(FlxG.width, 42, 0xFF773333);
+			invBG.loadGraphic(Asset.inventory, false, false, 320, 240);
 			invBG.alpha = 0.75;
+			invBG.visible = false;
 			add(invBG);
 			
 			Inv.visible = false;
-			items.push(new Item("Watercard", Asset.wcard1));
+			items.push(new Item("Watercard1", Asset.wcard1));
 			items.push(new Item("Firecard1", Asset.firecard1));
 			items.push(new Item("Firecard2", Asset.firecard2));
 			items.push(new Item("Greencard1", Asset.card1));
@@ -262,7 +266,7 @@ package
             }
 			
 			//inventory stuff here
-			if (FlxG.keys.justPressed("X"))
+			/*if (FlxG.keys.justPressed("X"))
             {
                 updateInv();
 				
@@ -270,8 +274,20 @@ package
                 Inv.visible = false;
             else
                 Inv.visible = true;
-            }
+            }*/
 			
+			// background of inventory buttons here
+			if (FlxG.keys.justPressed("X"))
+			{
+				updateInv();
+				Inv.visible = true;
+				invBG.visible = true
+			}
+			if (FlxG.keys.justReleased("X"))
+			{
+				Inv.visible = false;
+				invBG.visible = false;
+			}
 			
 			//works perfectly *DONT DISTURB THIS*
 			if (Registry._fcard1.health < 1 ||
@@ -378,7 +394,7 @@ package
 				windnumber == 0,
 				powerupnumber == 0,
 				earthnumber == 0, 
-				legendsnumber = 0) // may need to make it 11 under certain criteria
+				legendsnumber == 0) // may need to make it 11 under certain criteria
 			{
 				button03.exists = true;
 			}
@@ -529,8 +545,8 @@ package
 		{
 			for (var i:int = 0; i < inventory.length; i++)
 			{
-				inventory[i].x = 16 * i;
-				inventory[i].y = 44;
+				inventory[i].x = 55 * i;
+				inventory[i].y = 82;
 			}
 			
 		}

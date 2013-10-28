@@ -3,6 +3,7 @@ package
 	import flash.accessibility.ISimpleTextSelection;
 	import org.flixel.*;
 	import org.flixel.FlxState;
+	import org.flixel.FlxGroup;
 	import org.flixel.plugin.photonstorm.FlxButtonPlus;
 	import org.flixel.plugin.photonstorm.FlxExtendedSprite;
 	import org.flixel.plugin.photonstorm.FlxMouseControl;
@@ -31,6 +32,13 @@ package
 		private var optionstxt:FlxText;
 		private var blackopts:FlxSprite;
 		private var tutotext:FlxText;
+		private var invBG:FlxSprite;
+		
+		// inventory here **testing it**
+		private var Inv:FlxGroup = new FlxGroup();
+		private var inventory:Array = new Array();
+		private var items:Array = new Array();
+		
 		
 		// buttons added below only
 		private var button01:FlxButtonPlus;
@@ -38,11 +46,7 @@ package
 		private var button03:FlxButtonPlus; // 3 for now, maybe more later
 		private var button04:FlxButtonPlus; // battle button
 		private var button05:FlxButtonPlus; // tutorial button
-			
-		// add cards below
-		public static var _card1:Card; // just so i can add to the playstate later
-		public static var _fcard1:FireCard1; // might be an easier way to add cards but unsure.
-		public static var _wcard1:WaterCard1;
+
 		
 		// interactive below
 		public var stat:Number = 0;
@@ -116,17 +120,30 @@ package
 			add(button04);
 			
 			// declare cards below
-			_card1 = new Card(150, 150); // use this method for the X,Y position
-			_fcard1 = new FireCard1(80, 80);
-			_wcard1 = new WaterCard1(90, 90);
+			Registry._card1 = new Card(150, 150); // use this method for the X,Y position
+			
+			// declare fire cards below
+			Registry._fcard1 = new FireCard1(80, 80);
+			Registry._fcard2 = new FireCard2(90, 90);
+			
+			// declare water cards below
+			Registry._wcard1 = new WaterCard1(90, 90);
 			
 			// add cards here
-			add(_card1);
-			_card1.exists = false;
-			add(_wcard1);
-			_wcard1.exists = false;
-			add(_fcard1);
-			_fcard1.exists = false;
+			// earth cards below here
+			add(Registry._card1);
+			Registry._card1.exists = false;
+			
+			// water cards below here
+			add(Registry._wcard1);
+			Registry._wcard1.exists = false;
+			
+			// firecards below here
+			add(Registry._fcard1);
+			Registry._fcard1.exists = false;
+			add(Registry._fcard2);
+			Registry._fcard2.exists = false; 
+			
 			
 			//stats below
 			statstxt = new FlxText(0, 10, FlxG.width);
@@ -172,7 +189,7 @@ package
 			button05 = new FlxButtonPlus(110, 165, tutorialClicked, null, "Tutorial");
 			button05.exists = true;
 			add(button05);
-			
+						
 			//keep options at bottom so ontop
 			optionstxt = new FlxText(0, 0, 320, 
 			"Collect cards and battle! \n" +
@@ -202,6 +219,20 @@ package
 			tutotext.color = 0x0000A0;
 			tutotext.size = 16;
 			add(tutotext);
+			
+			add(Inv);
+			
+			invBG = new FlxSprite(0, 0);
+			invBG.makeGraphic(FlxG.width, 42, 0xFF773333);
+			invBG.alpha = 0.75;
+			add(invBG);
+			
+			Inv.visible = false;
+			items.push(new Item("Watercard", Asset.wcard1));
+			items.push(new Item("Firecard1", Asset.firecard1));
+			items.push(new Item("Firecard2", Asset.firecard2));
+			items.push(new Item("Greencard1", Asset.card1));
+			
 			}
 			
 		override public function update():void
@@ -221,7 +252,7 @@ package
 				
 			// activate plugin above the make sprite draggable below the enabled plugin code.
 			// This below allows any extended from Card class to be draggable
-			_card1.enableMouseDrag();
+			Registry._card1.enableMouseDrag();
 			
 			// XP and Level up maths here
 			if (xp > 5 + (level * level))
@@ -230,20 +261,33 @@ package
 			     xp = 0;
             }
 			
+			//inventory stuff here
+			if (FlxG.keys.justPressed("X"))
+            {
+                updateInv();
+				
+            if (Inv.visible)
+                Inv.visible = false;
+            else
+                Inv.visible = true;
+            }
+			
+			
 			//works perfectly *DONT DISTURB THIS*
-			if (_fcard1.health < 1 ||
-			    _wcard1.health < 1 ||
-			    _card1.health < 1)
+			if (Registry._fcard1.health < 1 ||
+			     Registry._fcard2.health <1 ||
+			     Registry._wcard1.health < 1 ||
+			     Registry._card1.health < 1)
 			{
 				button04.visible = false;
 				button03.exists = true;
 				cardhealth.exists = false;
-				_fcard1.exists = false;
-				_wcard1.exists = false;
-				_fcard1.health = FireCard1.HEALTH;
-				_wcard1.health = WaterCard1.HEALTH;
-				_card1.health = Card.HEALTH;
-				battlegen = FlxMath.rand(1, 5); // keep it safe and fair
+				Registry._fcard1.exists = false;
+				Registry._wcard1.exists = false;
+				Registry._fcard1.health = FireCard1.HEALTH;
+				Registry._wcard1.health = WaterCard1.HEALTH;
+				Registry._card1.health = Card.HEALTH;
+				battlegen = 1; // keep it safe and fair
 				
 			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 				cardnumber =  //*VERY IMPORTANT* DONT TOUCH THIS AT ALL!!!!!!!!
@@ -271,15 +315,19 @@ package
 			// need to add as i go into this code
 			if (waternumber == 1) 
 			{
-				cardhealth.text = 'Card HP:' + _wcard1.health.toString();
+				cardhealth.text = 'Card HP:' + Registry._wcard1.health.toString();
 			}
 			if (firenumber == 1)
 			{
-				cardhealth.text = 'Card HP:' +_fcard1.health.toString();
+				cardhealth.text = 'Card HP:' + Registry._fcard1.health.toString();
 			}
-			if (_card1.exists == true) // havent set a number for this yet
+			if (firenumber == 2)
 			{
-				cardhealth.text = 'Card HP:' +_card1.health.toString();
+				cardhealth.text = 'Card HP:' + Registry._fcard2.health.toString();
+			}
+			if (Registry._card1.exists == true) // havent set a number for this yet
+			{
+				cardhealth.text = 'Card HP:' + Registry._card1.health.toString();
 			}
 			
 			// options hide/show below
@@ -308,11 +356,15 @@ package
 				button04.visible = false;
 			}
 			// below is all the cards in update given numbers 
-			if (_fcard1.exists == true)
+			if (Registry._fcard1.exists == true)
 			{
 				firenumber = 1; // made 1 for first card in fire deck
 			}
-			if (_wcard1.exists == true)
+			if (Registry._fcard2.exists == true)
+			{
+				firenumber = 2;
+			}
+			if (Registry._wcard1.exists == true)
 			{
 				waternumber = 1; // same applied to water as fire for card numbers
 			}
@@ -320,14 +372,13 @@ package
 		
 		private function button01Clicked():void // xp gain button
 		{
-			// Re-spawns the same card back in (recycling the good way)
-			if (_fcard1.health < 1 || 
-			    _wcard1.health < 1 || 
-				_card1.health <1)
-			{
-				button03.exists = true; // reset random card button
-			}
-			if (_fcard1.exists == false || _wcard1.exists == false || _wcard1.exists == false)
+			if (cardnumber == 0,  //*VERY IMPORTANT* 
+				firenumber == 0, 
+				waternumber == 0,
+				windnumber == 0,
+				powerupnumber == 0,
+				earthnumber == 0, 
+				legendsnumber = 0) // may need to make it 11 under certain criteria
 			{
 				button03.exists = true;
 			}
@@ -341,7 +392,7 @@ package
 		private function button03Clicked():void // Alot to add here... #sadface haha
 		{
 			
-			/*if (_card1.exists == true && _wcard1.exists == false && _fcard1.exists == false)
+			/*if (Registry._card1.exists == true && Registry._wcard1.exists == false && Registry._fcard1.exists == false)
 			{
 				cardgen = FlxMath.rand(1, 20, [10]);
 			}*/
@@ -352,17 +403,24 @@ package
 				if (firenumber == 1)
 				{
 			    add(cardhealth); 
-		    	_fcard1.exists = true;
+		    	Registry._fcard1.exists = true;
+				addInv("Firecard1");
 		    	cardhealth.exists = true;
 				button03.exists = false;
 		    	button04.visible = true;
 				cardgen = 1; // necessary for debug of math
 				}
-			/*	if (firenumber == 2)
+				if (firenumber == 2)
 				{
-					//these all need coded in
+				add(cardhealth);
+				addInv("Firecard2");
+				Registry._fcard2.exists = true;
+				cardhealth.exists = true;
+				button03.exists = false;
+		    	button04.visible = true;
+				cardgen = 1;
 				}
-				if (firenumber == 3)
+			/*	if (firenumber == 3)
 				{
 					
 				}
@@ -401,7 +459,8 @@ package
 				if (waternumber == 1)
 				{
 				add(cardhealth);
-				_wcard1.exists = true;
+				addInv("Watercard1");
+				Registry._wcard1.exists = true;
 				cardhealth.exists = true;
 				button03.exists = false;
 				button04.visible = true;
@@ -411,7 +470,7 @@ package
 		/*	if (cardgen == 10)
 			{
 				add(cardhealth);
-				_card1.exists = true;
+				Registry._card1.exists = true;
 				cardhealth.exists = true;
 				button03.exists = false;
 				button04.visible = true;
@@ -432,17 +491,21 @@ package
 			
 			battlegen = FlxMath.rand(1, 50); // random battle number generator
 			
-			if (battlegen == 5,10,15,20,25,30,35,40,45,50 && _fcard1.exists == true) // numbers and card existance
+			if (battlegen == 5,10,15,20,25,30,35,40,45,50 && Registry._fcard1.exists == true) // numbers and card existance
 			{
-			     _fcard1.hurt(FlxMath.rand(1, 15));
+			     Registry._fcard1.hurt(FlxMath.rand(1, 15));
 			}
-			if (battlegen == 6,12,18,21,27,31,37,41,47,49 && _wcard1.exists == true)
+		    if (battlegen == 5, 10, 15, 20, 25, 30, 35, 40, 45, 50 && Registry._fcard2.exists == true)
 			{
-				_wcard1.hurt(FlxMath.rand(1, 25));
+				Registry._fcard2.hurt(FlxMath.rand(5, 20));
 			}
-			if (battlegen == 2, 6, 11, 17, 29, 37 && _card1.exists == true)
+			if (battlegen == 6,12,18,21,27,31,37,41,47,49 && Registry._wcard1.exists == true)
 			{
-				_card1.hurt(FlxMath.rand(1, 10));
+				Registry._wcard1.hurt(FlxMath.rand(1, 25));
+			}
+			if (battlegen == 2, 6, 11, 17, 29, 37 && Registry._card1.exists == true)
+			{
+				Registry._card1.hurt(FlxMath.rand(1, 10));
 			}
 		}
 		private function tutorialClicked():void
@@ -462,6 +525,54 @@ package
 			button03.visible =
 			button04.visible = true;
 		}
-	}
+		private function updateInv():void
+		{
+			for (var i:int = 0; i < inventory.length; i++)
+			{
+				inventory[i].x = 16 * i;
+				inventory[i].y = 44;
+			}
+			
+		}
+		public function addInv(name:String):void
+        {
+	        var newItem:Item;
+			
+		    for (var i:int = 0; i < items.length; i++)
+	        {
+		    if (items[i].name == name)
+	        {
+	     	newItem = new Item(items[i].name, items[i].image);
+	        }
+            }
+            newItem.scrollFactor.x = 0;
+            newItem.scrollFactor.y = 0;
+	
+        	inventory.push(newItem);
+		  
+         	Inv.add(newItem);
+		  
+       	    updateInv();
+   }
+   private function remInv(input:String):void
+   {
+	 for (var i:int = 0; i < inventory.length; i++ )
+	 {
+	   if (inventory[i].name == input.split(",")[0])
+	   {
+		 Inv.remove(inventory[i], true);
+		 inventory.splice(i, 1);
+			  
+		 if (input.split(",")[1] == "true")
+		   i--;
+		 else
+		   break;
+	   }
+	 }
+	 
+	 updateInv();
+   }
+		
+   }
 
 }

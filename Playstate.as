@@ -98,9 +98,9 @@ package
 			
 			//activate plugin below for power tools
 			if (FlxG.getPlugin(FlxMouseControl) == null)
-            {
-                FlxG.addPlugin(new FlxMouseControl);
-            }
+                           {
+                               FlxG.addPlugin(new FlxMouseControl);
+                           }
 			
 			// the card movement is below in update and the activated plugin code above
 			// * Should only need this 1 card movement hopefully *
@@ -109,9 +109,9 @@ package
 			// XP and Level up maths here
 			if (xp > 5 + (level * level))
 			{
-               level ++;
+                           level ++;
 			   xp = 0;
-            }
+                        }
 			
 			if (level > 3)
 			{

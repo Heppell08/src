@@ -1,3 +1,5 @@
+New Project || Follow on twitter @heppell08
+=====================================================
 
 Update notes and TODO here:
 
@@ -25,5 +27,4 @@ Added some basic images
 Made cards draggable with mouse
 Added options (to be changed to a boolean show instead of state)
 
-Heppell08 New Project || Follow on twitter @heppell08
-==================================================================
+

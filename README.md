@@ -5,12 +5,12 @@ Update notes and TODO here:
 
 TODO:
 Make types of number for the following:
-	Type 1) Fire
-    Type 2) Water
-	Type 3) Earth
-	Type 4) Wind
-	Type 5) Legend Ability
-	Type 6) Power Up
+	Type 1) Fire.
+        Type 2) Water.
+	Type 3) Earth.
+	Type 4) Wind.
+	Type 5) Legend Ability.
+	Type 6) Power Up.
 	
 These numbers will be assigned to different cards as the
 cards are drawn into the game. Once the number is being held

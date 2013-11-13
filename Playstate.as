@@ -46,7 +46,9 @@ package
 		private var button03:FlxButtonPlus; // 3 for now, maybe more later
 		private var button04:FlxButtonPlus; // battle button
 		private var button05:FlxButtonPlus; // tutorial button
-
+		
+		// game saving stuff here
+		public static var gamesave:FlxSave;
 		
 		// interactive below
 		public var stat:Number = 0;

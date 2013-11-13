@@ -16,6 +16,8 @@ package
 		[Embed(source = "../Art/swordmouse.PNG")]public static const mouse:Class;
 		[Embed(source = "../Art/optionsbox.PNG")]public static const blackoptions:Class;
 		[Embed(source = "../Art/inventorybg.PNG")]public static const inventory:Class;
+		[Embed(source = "../Art/splashscreen.PNG")]public static const splashSS:Class;
+		[Embed(source = "../Art/cardinfo.PNG")]public static const cardinfo:Class;
 		
 		//cards imported below
 		[Embed(source = "../Art/card1.PNG")]public static const card1:Class;

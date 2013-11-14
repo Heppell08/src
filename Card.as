@@ -14,6 +14,8 @@ package
 	 */
 	public class Card extends FlxExtendedSprite
 	{
+		// this is the first card created and also the template
+		//that other cards extend from
 		public static const HEALTH:int = 150;
 				
 		public function Card(X:int,Y:int):void 

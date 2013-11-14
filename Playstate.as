@@ -14,15 +14,11 @@ package
 	 * ...
 	 * @author Heppell08
 	 * Informations here
-	 * This is going to take a 
-	 * long time to code. I got a small
-	 * mini tut screen added for now and i'm
-	 * going to look up some code ideas for a
-	 * class that holds the info of cards existing
-	 * so it doesnt mess up my playstate.
-	 * Maybe make a class to extend playstate
-	 * and use that as the final version for the main
-	 * gameplay. just an idea ATM!
+	 * Recently updated FD to 4.5.0 and can say i'm impressed
+	 * with the turn out. Seems to have fixed a few of the issues
+	 * i had with the version i was using.
+	 * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	 * Side Note: Saving is still not working...
 	 */
 	public class Playstate extends FlxState
 	{
@@ -47,9 +43,9 @@ package
 		private var button04:FlxButtonPlus; // battle button
 		private var button05:FlxButtonPlus; // tutorial button
 		
-		// game saving stuff here
-		public static var gamesave:FlxSave;
-		
+		//save below
+		private var savebutton:FlxButtonPlus;
+				
 		// interactive below
 		public var stat:Number = 0;
 		public var xp:Number = 0
@@ -61,14 +57,14 @@ package
 		private var cnumber:FlxText;
 		
 		// seperate card numbers per stat of card below
-		private var firenumber:Number = 0; // firecards assigned in here
-		private var waternumber:Number = 0; // watercards assigned in here
-		private var earthnumber:Number = 0; // earth cards assigned in here
-		private var windnumber:Number = 0; // wind cards assigned in here
-		private var powerupnumber:Number = 0; // power ups assigned in here
+		public static var firenumber:Number = 0; // firecards assigned in here
+		public static var waternumber:Number = 0; // watercards assigned in here
+		public static var earthnumber:Number = 0; // earth cards assigned in here
+		public static var windnumber:Number = 0; // wind cards assigned in here
+		public static var powerupnumber:Number = 0; // power ups assigned in here
 		
 		// special legend number below
-		private var legendsnumber:Number = 0; //LEGENDARY CARDS HERE
+		public static var legendsnumber:Number = 0; //LEGENDARY CARDS HERE
 		
 		// onscreen texts below
 		private var statstxt:FlxText;
@@ -83,7 +79,7 @@ package
 		private var battlegen:int = (FlxMath.rand(1, 50));
 		
 		override public function create():void 
-		{
+		{			
 			FlxG.mouse.show(Asset.mouse, 3);// will change sprite in parentheses
 			
 			//add backdrop first so its at the back
@@ -120,6 +116,10 @@ package
 			button04 = new FlxButtonPlus(10, 210, battleClicked, null, "Battle");
 			button04.visible = false;
 			add(button04);
+			
+			savebutton = new FlxButtonPlus(10, 210, Registry.SaveData, null, "Save Game");
+			savebutton.visible = false;
+			
 			
 			// declare cards below
 			Registry._card1 = new Card(150, 150); // use this method for the X,Y position
@@ -222,10 +222,12 @@ package
 			tutotext.size = 16;
 			add(tutotext);
 			
+			add(savebutton);
+			
 			// inv group added here
 			// add to this group BELOW this add();
 			add(Inv);
-			
+						
 			// changing to a full screen HUD look..
 			invBG = new FlxSprite(0, 0);
 			invBG.loadGraphic(Asset.inventory, false, false, 320, 240);
@@ -238,7 +240,6 @@ package
 			items.push(new Item("Firecard1", Asset.firecard1));
 			items.push(new Item("Firecard2", Asset.firecard2));
 			items.push(new Item("Greencard1", Asset.card1));
-			
 			}
 			
 		override public function update():void
@@ -265,19 +266,26 @@ package
 			{
                  level ++;
 			     xp = 0;
-            }
+            }	
 			
-			//inventory stuff here
-			/*if (FlxG.keys.justPressed("X"))
-            {
-                updateInv();
-				
-            if (Inv.visible)
-                Inv.visible = false;
-            else
-                Inv.visible = true;
-            }*/
-			
+			if (Registry.gameload == true)
+			{
+				firenumber = Registry.Save.data.FCARDS;
+				waternumber = Registry.Save.data.WCARDS;
+				windnumber = Registry.Save.data.WICARDS;
+				earthnumber = Registry.Save.data.ECARDS;
+				legendsnumber = Registry.Save.data.LCARDS;
+			}
+			else
+			{
+				cardnumber =  //*VERY IMPORTANT* DONT TOUCH THIS AT ALL!!!!!!!!
+				firenumber = 
+				waternumber =
+				windnumber =       // Dont modify it in anyway
+				powerupnumber =
+				earthnumber = 
+				legendsnumber = 0; // everything is reset in here
+			}
 			// background of inventory buttons here
 			if (FlxG.keys.justPressed("X"))
 			{
@@ -290,9 +298,9 @@ package
 				Inv.visible = false;
 				invBG.visible = false;
 			}
-			
 			//works perfectly *DONT DISTURB THIS*
-			if (Registry._fcard1.health < 1 ||
+		    if 
+			    (Registry._fcard1.health < 1 ||
 			     Registry._fcard2.health <1 ||
 			     Registry._wcard1.health < 1 ||
 			     Registry._card1.health < 1)
@@ -306,21 +314,25 @@ package
 				Registry._wcard1.health = WaterCard1.HEALTH;
 				Registry._card1.health = Card.HEALTH;
 				battlegen = 1; // keep it safe and fair
-				
-			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
-				cardnumber =  //*VERY IMPORTANT* DONT TOUCH THIS AT ALL!!!!!!!!
-				firenumber = 
-				waternumber =
-				windnumber =       // Dont modify it in anyway
-				powerupnumber =
-				earthnumber = 
-				legendsnumber = 0; // everything is reset in here
-			//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
 			}
 			
 			// update 
 			super.update();
-			
+						
+			// below is all the cards in update given numbers 
+			if (Registry._fcard1.exists == true)
+			{
+				firenumber = 1; // made 1 for first card in fire deck
+			}
+			if (Registry._fcard2.exists == true)
+			{
+				firenumber = 2;
+			}
+			if (Registry._wcard1.exists == true)
+			{
+				waternumber = 1; // same applied to water as fire for card numbers
+			}
+						
 			// add the numbers below for real time show
 			battlegentext.text = 'BGen:' + battlegen.toString();
 			statstxt.text = 'Stats:' + stat.toString();
@@ -353,6 +365,11 @@ package
 			{
 				return;
 			}
+			if (FlxG.keys.justPressed("S"))
+			{
+				blackopts.visible = true;
+				savebutton.visible = true;
+			}
 			if (FlxG.keys.justPressed("O"))
 			{
 				FlxG.mouse.hide();
@@ -364,6 +381,10 @@ package
 				FlxG.mouse.show();
 				blackopts.visible = false;
 				optionstxt.visible = false;
+				if (savebutton.visible == true)
+				{
+					savebutton.visible = false;
+				}
 			}
 			if(button05.exists == true)
 			{
@@ -373,24 +394,22 @@ package
 				button03.visible =
 				button04.visible = false;
 			}
-			// below is all the cards in update given numbers 
-			if (Registry._fcard1.exists == true)
-			{
-				firenumber = 1; // made 1 for first card in fire deck
-			}
-			if (Registry._fcard2.exists == true)
-			{
-				firenumber = 2;
-			}
-			if (Registry._wcard1.exists == true)
-			{
-				waternumber = 1; // same applied to water as fire for card numbers
-			}
 		}
 		
 		private function button01Clicked():void // xp gain button
 		{
-			if (cardnumber == 0,  //*VERY IMPORTANT* 
+			if (Registry.gameload == true)
+			{
+			trace(Registry.Save.data.FCARDS);
+			trace(Registry.Save.data.WCARDS);
+			}
+			else 
+			{
+			trace("Game not Loaded")	
+			trace("Water:" +waternumber.toString())
+			trace("FireCard:" +firenumber.toString())
+			}
+			/*if (cardnumber == 0,  //*VERY IMPORTANT* 
 				firenumber == 0, 
 				waternumber == 0,
 				windnumber == 0,
@@ -399,7 +418,7 @@ package
 				legendsnumber == 0) // may need to make it 11 under certain criteria
 			{
 				button03.exists = true;
-			}
+			}*/
 		}
 		
 		private function button02Clicked():void
@@ -503,7 +522,7 @@ package
 		
 		private function battleClicked():void // basic battle function via buttons
 		{
-			// So button vidible is best approach and not glitching or
+			// So button visible is best approach and not glitching or
 			// firing the function when it becomes an existance ingame.
 			// winning and more code to come :D
 			
@@ -558,11 +577,12 @@ package
 			
 		    for (var i:int = 0; i < items.length; i++)
 	        {
-		    if (items[i].name == name)
-	        {
-	     	newItem = new Item(items[i].name, items[i].image);
-	        }
+		        if (items[i].name == name)
+	            {
+	        	newItem = new Item(items[i].name, items[i].image);
+	            }
             }
+			
             newItem.scrollFactor.x = 0;
             newItem.scrollFactor.y = 0;
 	
@@ -571,26 +591,37 @@ package
          	Inv.add(newItem);
 		  
        	    updateInv();
-   }
-   private function remInv(input:String):void
-   {
-	 for (var i:int = 0; i < inventory.length; i++ )
-	 {
-	   if (inventory[i].name == input.split(",")[0])
-	   {
-		 Inv.remove(inventory[i], true);
-		 inventory.splice(i, 1);
+        }
+        private function remInv(input:String):void
+        {
+        	for (var i:int = 0; i < inventory.length; i++ )
+ 	        {
+	             if (inventory[i].name == input.split(",")[0])
+	            {
+	         	 Inv.remove(inventory[i], true);
+	        	 inventory.splice(i, 1);
 			  
-		 if (input.split(",")[1] == "true")
-		   i--;
-		 else
-		   break;
-	   }
-	 }
-	 
-	 updateInv();
-   }
-		
+	        	 if (input.split(",")[1] == "true")
+	         	   i--;
+	         	 else
+	        	   break;
+	            }
+            }
+			
+ 	        updateInv();
+        }
+		public static function LoadData():void
+        {
+           Registry.Save = new FlxSave();
+           Registry.gameload = Registry.Save.bind("Cards");
+
+              if (Registry.gameload)
+              {
+				  trace(firenumber); // stuck at 0 on loading
+				  trace(waternumber); // same as above
+                  trace("Game Loaded");
+              }
+        }
    }
 
 }

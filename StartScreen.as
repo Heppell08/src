@@ -21,8 +21,8 @@ package
 		
 		// main buttons below **Uncoded**
 		private var newgame:FlxButtonPlus;
-		private var loadgame:FlxButtonPlus;
 		private var fulloptions:FlxButtonPlus;
+		private var loadbutton:FlxButtonPlus;
 		
 		override public function create():void 
 		{
@@ -37,6 +37,9 @@ package
 			
 			fulloptions = new FlxButtonPlus(200, 130, optionsOpen, null, "Options");
 			add(fulloptions); // another basic switch state button
+			
+			loadbutton = new FlxButtonPlus(100, 100, Playstate.LoadData, null, "Load Game");
+			add(loadbutton);
 		}
 		private function startGame():void 
 		{
@@ -46,7 +49,7 @@ package
 		{
 			FlxG.switchState(new Options);
 		}
-		// below will be load game when coded
+		
 		
 	}
 

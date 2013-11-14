@@ -1,39 +1,23 @@
 New Project || Follow on twitter @heppell08
 =====================================================
 
-Update notes and TODO here:
+SIDE NOTE
+=========
+Since im temp suspended on twitter on the account @heppell08
+i will be using @heppell87 until i am able to recover that account.
 
-TODO:
-Added inventory system courtesy of a tutorial by KNCHgames.com 
-This style of coding was beyond my skills and since i read this tutorial a 
-while ago and never coded it i figured the inventory system was something 
-i really liked the idea of so credits to that site for the inventory.
-	
-So the Registry has been added into the game for purpose im not even 
-sure about. The cards will be held in there until i find a way to use the 
-registry better with other variables. I do know it will be helpful for when i add
-an inventory to hold the cards earned within the game.
-	
-These numbers will be assigned to different cards as the
-cards are drawn into the game. Once the number is being held
-as active it will initiate and battle type. Meaning strengths/weaknesses
-etc will be effective in the battle. This is the only way i can think
-of making the cards have a type ingame and it seems the most effective
-way of doing. 
+Pretty huge updates have been happening because i have "SORT OF" added
+a gamesave system but because of the complexity of the way im trying to save i have a huge
+amount of debug code to write to keep the buttons, cards, health and sprite all onscreen
+after i have the game loaded in the new state. I did have a loadgame button but im beginning 
+to suspect it is useless because when tracing the card numbers in a function in xp gain its 
+tracing the number as if its loaded but i didnt load. So it must natively loadgame the way 
+ive coded it so im going to change the loadgame button to a load eraser instead so that if needs 
+be then the save may be erased and a restart can occur. I am not having multiple save as i believe
+that will become VERY erroneous until i sort out the main save system itself. I still have cards 
+i need to add and i still have a huge amount of math coding to complete aswell. So for now the 
+code is updated in github but i'm still a long way from completion.
 
-Having attempted to extend the playstate into sprite.as as a test
-it failed epically. Luckily i believe my numbers in the update loop
-should hopefully make lighter work of what im wanting to achieve within
-the game. 
-After this is working, more cards will be added and then ill be able
-to code the rare cards and legend cards, also make my NPC and start 
-making xp ratios for certain cards killed in battle. 
-The other hard part is making some form of enemy to fight against. I
-have an idea on that too. The flxmath.rand(1,50) and assign the opponent
-moves per number and it will make the whole thing alot more random
-and fair. 
-
-For now this is my readme updated. 
-
-
-
+I also have beent thinking of adding an RPG element to the game and in the near future
+that may become a reality but for now i will have it as a stand alone game as cards
+and maybe work on the RPG bit on the side.

@@ -41,7 +41,6 @@ package
 		   "Yellow card - Good \n" +
 		   "Orange Card - Rare \n" +
 		   "Purple card - Legendary \n" +
-		   "Yellow Card - Unique \n" +
 		   "Black Card - ???? \n" +
 		   "Click Exit to Exit");
 		   text.color = 0xFF0000;

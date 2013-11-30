@@ -4,6 +4,7 @@ package
 	/**
 	 * ...
 	 * @author Heppell08
+	 * Base class for all items for inventory
 	 */
 	public class Item extends FlxSprite
 	{
